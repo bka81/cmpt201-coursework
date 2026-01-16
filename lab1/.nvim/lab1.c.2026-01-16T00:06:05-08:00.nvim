@@ -1,0 +1,32 @@
+#define _POSIX_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+// Write a program that receives a full line of user (keyboard) input, tokenizes
+// it with the delimiter " " (space), and prints out each token one at a time on
+// a new line. Use getline() for user input and strtok_r() for tokenization.
+// Then make it loop to keep accepting new input.
+
+int main() {
+  char *buff = NULL;
+  size_t size = 0;
+  ssize_t num_read = -1;
+  char *tok = NULL;
+  char *saveptr = NULL;
+  while (1) {
+    printf("Please enter some text: ");
+    num_read = getline(&buff, &size, stdin);
+    // Error handling:
+    if (num_read == -1) {
+      perror("getline failed");
+      free(buff);
+      exit(EXIT_FAILURE);
+    }
+    tok = strtok_r(buff, " ", &saveptr);
+
+    while (tok != NULL) {
+      printf("%s\n", tok);
+      tok = strtok_r(NULL, " ", &saveptr);
+    }
+  }
+}

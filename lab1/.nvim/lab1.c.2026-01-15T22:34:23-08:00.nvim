@@ -1,0 +1,7 @@
+#include <stdio.h> 
+
+//Write a program that receives a full line of user (keyboard) input, tokenizes it with the delimiter " " (space), and prints out each token one at a time on a new line. Use getline() for user input and strtok_r() for tokenization. Then make it loop to keep accepting new input.
+
+char * buff = NULL;
+char size = 0;
+ssize_t num 

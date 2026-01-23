@@ -1,0 +1,55 @@
+#define _POSIX_C_SOURCE 200809L
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+/*Write a program that does the following:
+
+It receives user input from the keyboard that is the full path of a program to
+run. e.g., "/usr/bin/ls", "/usr/bin/nvim", or "/usr/bin/ip", etc. You do not
+need to handle commandline arguments (such as /usr/bin/ls -l -a). It executes
+the command the user typed in. It repeats the above two steps forever. Use
+fork(), exec(), and waitpid().*/
+
+int main(void) {
+  char *buffer = NULL;
+  size_t size = 0;
+  ssize_t read = -1;
+  char *token = NULL;
+  char *ptrToNextToken = NULL;
+
+  while (1) {
+    printf("Enter programs to run.\n");
+    read = getline(&buffer, &size, stdin);
+    if (read == -1) {
+      perror("getline failed");
+      free(buffer);
+      exit(EXIT_FAILURE);
+    }
+
+    token = strtok_r(buffer, "\n", &ptrToNextToken);
+
+    pid_t fpid = fork();
+
+    if (fpid < 0) {
+      perror("fork failed");
+      exit(EXIT_FAILURE);
+    } else if (fpid == 0) {
+      // child
+      if (execl(token, token, (char *)NULL) == -1) {
+        perror("Exec failure");
+        exit(EXIT_FAILURE);
+      }
+    } else {
+      int wstatus = 0;
+      if (waitpid(fpid, &wstatus, 0) == -1) {
+        perror("waitpid failed");
+        exit(EXIT_FAILURE);
+      }
+    }
+  }
+  return 0;
+}

@@ -1,0 +1,42 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/*Write a program that does the following:
+
+It receives user input from the keyboard that is the full path of a program to
+run. e.g., "/usr/bin/ls", "/usr/bin/nvim", or "/usr/bin/ip", etc. You do not
+need to handle commandline arguments (such as /usr/bin/ls -l -a). It executes
+the command the user typed in. It repeats the above two steps forever. Use
+fork(), exec(), and waitpid().*/
+
+int main(void) {
+  char *buffer = NULL;
+  size_t size = 0;
+  ssize_t read = -1;
+  char *token = NULL;
+  char *ptrToNextToken = NULL;
+
+  char tokens[50][50];
+
+  for (int i = 0;; i++) {
+    printf("enter text");
+    read = getline(&buffer, &size, stdin);
+    if (read == -1) {
+      perror("getline failed");
+      free(buffer);
+      exit(EXIT_FAILURE);
+    }
+    token = strtok_r(buffer, "/", &ptrToNextToken);
+
+    while (token != NULL) {
+      printf("%s\n", token);
+      strcpy(tokens[i % 50], token);
+      printf("%s\n", tokens[i % 50]);
+      token = strtok_r(NULL, "/", &ptrToNextToken);
+    }
+  }
+
+  return 0;
+}

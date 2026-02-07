@@ -1,0 +1,13 @@
+#include <unistd.h>
+#include <stdint.h>
+
+//#include <stdint.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+
+struct block {
+  uint64_t size;
+  struct block *next;
+};
+
+int main(void) { int *program_break = sbrk(0); }

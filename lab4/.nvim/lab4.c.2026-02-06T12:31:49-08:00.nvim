@@ -1,0 +1,15 @@
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+struct block {
+  uint64_t size;
+  struct block* next;
+};
+
+int main(void) {
+  int *program_break = sbrk(0);
+}
+

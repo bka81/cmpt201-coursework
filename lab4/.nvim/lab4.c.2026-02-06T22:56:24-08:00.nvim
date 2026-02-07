@@ -1,0 +1,72 @@
+#define _XOPEN_SOURCE 500
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+// #include <stdint.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+int BUF_SIZE = 50;
+struct block {
+  uint64_t size;
+  struct block *next;
+};
+
+void print_out(char *format, void *data, size_t data_size) {
+  char buf[BUFSIZ];
+  ssize_t len = snprintf(buf, BUFSIZ, format,
+                         data_size == sizeof(uint64_t) ? *(uint64_t *)data
+                                                       : *(void **)data);
+  if (len < 0) {
+    perror("snprintf");
+  }
+  write(STDOUT_FILENO, buf, len);
+}
+
+int main(void) {
+  void *addr_first_block = sbrk(256);
+  void *addr_second_block = addr_first_block + 128;
+
+  struct block *block1 = (struct block *)addr_first_block;
+  struct block *block2 = (struct block *)addr_second_block;
+
+  block1->size = 128;
+  block1->next = NULL;
+  block2->size = 128;
+  block2->next = block1;
+
+  print_out("first block: %p\n", &block1, sizeof(&block1));
+  print_out("second block: %p\n", &block2, sizeof(&block2));
+
+  print_out("first block size: %d\n", &block1->size, sizeof(&block1->size));
+  print_out("first block next: %p\n", &block1->next, sizeof(&block1->next));
+
+  print_out("second block size: %d\n", &block2->size, sizeof(&block2->size));
+  print_out("second block next: %p\n", &block2->next, sizeof(&block2->next));
+
+  int header_size = sizeof(*block1);
+  // print_out("testing: struct size: %d\n", &header_size,
+  // sizeof(&header_size));
+  void *header_addr_block1 = addr_first_block + header_size;
+  // print_out("testing: header start addr: %p\n", &header_addr_block1,
+  // sizeof(&header_addr_block1));
+  void *header_addr_block2 = addr_second_block + header_size;
+
+  void *initialized_block1 = memset(header_addr_block1, 1, 112);
+  void *initialized_block2 = memset(header_addr_block2, 1, (128 - header_size));
+
+  print_out("%p\n", &initialized_block2, sizeof(&initialized_block2));
+
+  for (int i = 0; i < (128 - header_size); i++) {
+    print_out("%d: ", &i, sizeof(i));
+    print_out("%p: ", &initialized_block1[i], sizeof(initialized_block1[i]));
+    print_out("%d\n", &initialized_block1+i, sizeof(&initialized_block1+i));
+  }
+  // for (uint8_t i = 0; i < (128 - header_size); i++) {
+  // print_out("%d\n", &initialized_block2[i], sizeof(&initialized_block2[i]));
+  //}
+  // print_out("allocated mem address: %p\n", &block1, sizeof(&block1));
+
+  // print_out("block header 2 mem address: %p\n", &block2, sizeof(&block2));
+  return 0;
+}

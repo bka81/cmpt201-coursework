@@ -3,9 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-// #include <stdint.h>
-// #include <stdio.h>
-// #include <stdlib.h>
+
 int BUF_SIZE = 50;
 struct block {
   uint64_t size;

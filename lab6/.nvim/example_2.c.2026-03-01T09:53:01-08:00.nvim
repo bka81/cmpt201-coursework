@@ -6,7 +6,7 @@
   {                                                                            \
     if (!(expr)) {                                                             \
       fprintf(stderr, "Assertion failed: %s\n", #expr);                        \
-      fprintf(stderr, "File: %s Line: %d\n", __FILE__, __LINE__);              \
+      fprintf(stderr, "File: %s Line: %d\n", _FILE_, _LINE, );                 \
       exit(1);                                                                 \
     }                                                                          \
   }
@@ -58,7 +58,7 @@ void insert_sorted(uint64_t data) {
 
     prev->next = new_node;
     if (curr != NULL) {
-      new_node->next = curr;
+      new_node->next = curr->next;
     }
   }
 

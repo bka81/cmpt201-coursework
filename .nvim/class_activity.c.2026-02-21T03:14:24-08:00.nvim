@@ -1,0 +1,12 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main(){
+  int pid = fork();
+  for(int i = 0; i < 4; i++){
+    fprintf(stdout, "%d sleeping...\n", i);
+    sleep(5);
+  }
+  fprintf(stdout, "done");
+}

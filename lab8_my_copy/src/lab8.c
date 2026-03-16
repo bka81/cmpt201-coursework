@@ -1,6 +1,5 @@
 // Lab 8 - Starting Code for sorting data in threads using uthash
-// note: Used chatgpt for debuggin and understanding pthread functions and their
-// implementation
+// note: Used chatgpt for debuggin and understanding pthread functions implementation
 #include "uthash.h"
 #include <pthread.h>
 #include <stdio.h>
